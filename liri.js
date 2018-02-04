@@ -4,14 +4,16 @@ var keys = require("./keys.js");
 
 var request = require("request");
 
-var spotify = require("node-spotify-api");
+var Twitter = require("twitter");
+var Spotify = require("node-spotify-api");
 
 // store all of the arguments in an array
 var nodeArgs = process.argv;
 var userRequest = process.argv[2];
 
-// create an empty variable for holding the movie name
+// create an empty variable for holding the movie/song name
 var movieName = "";
+var songName = "";
 
 // "movie-this '<movie name here>'" function
 
@@ -64,7 +66,6 @@ if (userRequest === "movie-this" && movieName) {
 }
 
 /// Twitter API call
-var Twitter = require("twitter");
 
 var client = new Twitter({
     consumer_key: "BU4NhW1l64Gva5RSXKZI2ZuPj",
@@ -123,4 +124,19 @@ if (userRequest === "my-tweets") {
 
 // Spotify API call
 
+var spotify = new Spotify({
+    id: "3f878e381e46479783adb4b883910545",
+    secret: "f7ae58fbe4344712a3ce94110feea449"
+});
+
+songName = "Beat It"
+if (userRequest === "spotify-this-song" && songName) {
+    spotify.search({type: "track", query: songName}, function (error, data){
+        if (error) {
+            throw (error);
+        } else { 
+            console.log(data);
+        }
+    });
+}
 
