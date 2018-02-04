@@ -82,38 +82,10 @@ function twitterFunction () {
         if (!error) {
             console.log("*-*-*-Your Tweets-*-*-*");
 
-            console.log(`Tweet Created On: ${tweets[0].created_at}`);
-            console.log(`Tweet: ${tweets[0].text}`)
-
-            console.log(`Tweet Created On: ${tweets[1].created_at}`);
-            console.log(`Tweet: ${tweets[1].text}`)
-
-            console.log(`Tweet Created On: ${tweets[2].created_at}`);
-            console.log(`Tweet: ${tweets[2].text}`)
-
-            console.log(`Tweet Created On: ${tweets[3].created_at}`);
-            console.log(`Tweet: ${tweets[3].text}`)
-
-            console.log(`Tweet Created On: ${tweets[4].created_at}`);
-            console.log(`Tweet: ${tweets[4].text}`)
-
-            console.log(`Tweet Created On: ${tweets[5].created_at}`);
-            console.log(`Tweet: ${tweets[5].text}`)
-
-            console.log(`Tweet Created On: ${tweets[6].created_at}`);
-            console.log(`Tweet: ${tweets[6].text}`)
-
-            console.log(`Tweet Created On: ${tweets[7].created_at}`);
-            console.log(`Tweet: ${tweets[7].text}`)
-
-            console.log(`Tweet Created On: ${tweets[8].created_at}`);
-            console.log(`Tweet: ${tweets[8].text}`)
-
-            console.log(`Tweet Created On: ${tweets[9].created_at}`);
-            console.log(`Tweet: ${tweets[9].text}`)
-
-            console.log(`Tweet Created On: ${tweets[10].created_at}`);
-            console.log(`Tweet: ${tweets[10].text}`)
+            for (var i = 0; i < 20; i++) {
+            console.log(`Tweet Created On: ${tweets[i].created_at}`);
+            console.log(`Tweet: ${tweets[i].text}`)
+            }
         } 
     });
 }
@@ -129,14 +101,47 @@ var spotify = new Spotify({
     secret: "f7ae58fbe4344712a3ce94110feea449"
 });
 
-songName = "Beat It"
+// loop through all words in the node argument 
+for (var i = 3; i < nodeArgs.length; i++) {
+
+    if (i > 3 && i < nodeArgs.length) {
+        songName = songName + " " + nodeArgs[i];
+    } else {
+        songName += nodeArgs[i];
+    }
+}
+
+function consoleSongs (data) {
+    console.log(`Artist: ${data.tracks.items[0].artists[0].name}`);
+    console.log(`Song Title: ${data.tracks.items[0].name}`);
+    console.log(`Link to Song: ${data.tracks.items[0].href}`);
+    console.log(`Album: ${data.tracks.items[0].album.name}`);
+}
+
+
 if (userRequest === "spotify-this-song" && songName) {
     spotify.search({type: "track", query: songName}, function (error, data){
         if (error) {
             throw (error);
         } else { 
-            console.log(data);
+            consoleSongs(data);
         }
     });
+} else if (userRequest === "spotify-this-song" && "undefined") {
+    songName = "The Sign";
+    spotify.search({type: "track", query: songName}, function (error, data){
+        if (error) {
+            throw (error);
+        } else { 
+            console.log(`Artist: ${data.tracks.items[5].artists[0].name}`);
+            console.log(`Song Title: ${data.tracks.items[5].name}`);
+            console.log(`Link to Song: ${data.tracks.items[5].href}`);
+            console.log(`Album: ${data.tracks.items[5].album.name}`);  
+        }
+    }); 
 }
+
+
+
+
 
