@@ -1,6 +1,7 @@
 // global variables
-var fs = require("fs");
+var env = require("dotenv").config();
 var keys = require("./keys.js");
+var fs = require("fs");
 
 var request = require("request");
 
@@ -55,7 +56,6 @@ if (userRequest === "movie-this" && movieName) {
 } else if (userRequest === "movie-this" && "undefined") { 
 
     queryURL = "http://www.omdbapi.com/?t=Mr.+Nobody&y=&plot=short&apikey=trilogy";
-    
 
     request(queryURL, function (error, response, body){
 
@@ -66,13 +66,7 @@ if (userRequest === "movie-this" && movieName) {
 }
 
 /// Twitter API call
-
-var client = new Twitter({
-    consumer_key: "BU4NhW1l64Gva5RSXKZI2ZuPj",
-    consumer_secret: "wOd6C4d8ixDhS03KtbcSTqTbsyA4Aq8hCLAovAjmq4hKNNcPli",
-    access_token_key: "1517100054-Ja2G0XsFYFo58GQ03VFSQncrHi6qr5ns5G4aKIM",
-    access_token_secret: "x6X4C41vLuq1TO52GhnIIvdkH9tyj8AVtHUv8txF8j1Re"
-});
+var client = new Twitter(keys.twitter);
 
 // "my-tweets" function
 var params = {screen_name: 'asmishra93'};
@@ -95,13 +89,10 @@ if (userRequest === "my-tweets") {
 };
 
 // Spotify API call
-
-var spotify = new Spotify({
-    id: "3f878e381e46479783adb4b883910545",
-    secret: "f7ae58fbe4344712a3ce94110feea449"
-});
+var spotify = new Spotify(keys.spotify);
 
 // loop through all words in the node argument 
+
 for (var i = 3; i < nodeArgs.length; i++) {
 
     if (i > 3 && i < nodeArgs.length) {
@@ -118,6 +109,7 @@ function consoleSongs (data) {
     console.log(`Album: ${data.tracks.items[0].album.name}`);
 }
 
+// "spotify-this-song '<song name here>'" function
 
 if (userRequest === "spotify-this-song" && songName) {
     spotify.search({type: "track", query: songName}, function (error, data){
@@ -140,6 +132,13 @@ if (userRequest === "spotify-this-song" && songName) {
         }
     }); 
 }
+
+// "do-what-it-says" function
+fs.readFile("random.txt", "utf8", function(error, data){
+    if (error) {
+        throw (error);
+    }
+})
 
 
 
