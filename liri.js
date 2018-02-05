@@ -134,11 +134,26 @@ if (userRequest === "spotify-this-song" && songName) {
 }
 
 // "do-what-it-says" function
-fs.readFile("random.txt", "utf8", function(error, data){
-    if (error) {
-        throw (error);
-    }
-})
+if (userRequest === "do-what-it-says") {
+    fs.readFile("random.txt", "utf8", function(error, data){
+
+        var spotify = new Spotify(keys.spotify);
+        var dataArr = data.split(",");
+
+        songName = dataArr[1];
+
+        function test () {
+            spotify.search({type: "track", query: songName}, function (error, data) {
+                if (error) {
+                    throw (error);
+                } else { 
+                    consoleSongs(data);
+                }
+            });
+        }
+        test();
+    });
+}
 
 
 
