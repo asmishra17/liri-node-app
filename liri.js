@@ -16,8 +16,8 @@ var userRequest = process.argv[2];
 var movieName = "";
 var songName = "";
 
+// *~*~* IMDB *~*~*
 // "movie-this '<movie name here>'" function
-
 function consoleMovies (body) {
 
     console.log(`Title: ${JSON.parse(body).Title}`);
@@ -41,8 +41,6 @@ for (var i = 3; i < nodeArgs.length; i++) {
     }
 }
 
-// IMDB API call 
-
 var queryURL = `http://www.omdbapi.com/?t="${movieName}"&y=&plot=short&apikey=trilogy`
 
 if (userRequest === "movie-this" && movieName) {
@@ -65,7 +63,7 @@ if (userRequest === "movie-this" && movieName) {
     });
 }
 
-/// Twitter API call
+// *~*~* Twitter *~*~*
 var client = new Twitter(keys.twitter);
 
 // "my-tweets" function
@@ -88,7 +86,7 @@ if (userRequest === "my-tweets") {
     twitterFunction();
 };
 
-// Spotify API call
+// *~*~* Spotify *~*~*
 var spotify = new Spotify(keys.spotify);
 
 // loop through all words in the node argument 
@@ -137,25 +135,54 @@ if (userRequest === "spotify-this-song" && songName) {
 if (userRequest === "do-what-it-says") {
     fs.readFile("random.txt", "utf8", function(error, data){
 
-        var spotify = new Spotify(keys.spotify);
         var dataArr = data.split(",");
+        
+        userRequest = dataArr[0]; 
+        var userSearch = dataArr[1];
+        
+        if (userRequest === "movie-this" && userSearch) {
 
-        songName = dataArr[1];
+            var movieArr = userSearch.split(" ").join("+");
 
-        function test () {
-            spotify.search({type: "track", query: songName}, function (error, data) {
+            queryURL = `http://www.omdbapi.com/?t="${movieArr}"&y=&plot=short&apikey=trilogy`
+            request(queryURL, function (error, response, body) {
+                if (!error && response.statusCode === 200) {
+                    consoleMovies(body);
+                }
+            });
+        
+        } else if (userRequest === "movie-this" && "undefined") { 
+        
+            queryURL = "http://www.omdbapi.com/?t=Mr.+Nobody&y=&plot=short&apikey=trilogy";
+        
+            request(queryURL, function (error, response, body){
+        
+                if (!error && response.statusCode === 200) {
+                   consoleMovies(body);
+                }
+            });
+        } else if (userRequest === "my-tweets") {
+            twitterFunction();
+        } else if (userRequest === "spotify-this-song" && userSearch) {
+            spotify.search({type: "track", query: userSearch }, function (error, data){
                 if (error) {
                     throw (error);
                 } else { 
                     consoleSongs(data);
                 }
             });
+        } else if (userRequest === "spotify-this-song" && "undefined") {
+            songName = "The Sign";
+            spotify.search({type: "track", query: songName}, function (error, data){
+                if (error) {
+                    throw (error);
+                } else { 
+                    console.log(`Artist: ${data.tracks.items[5].artists[0].name}`);
+                    console.log(`Song Title: ${data.tracks.items[5].name}`);
+                    console.log(`Link to Song: ${data.tracks.items[5].href}`);
+                    console.log(`Album: ${data.tracks.items[5].album.name}`);  
+                }
+            }); 
         }
-        test();
-    });
+})
 }
-
-
-
-
-
